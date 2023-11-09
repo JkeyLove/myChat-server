@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import static com.example.chatserver.websocket.WebSocketServerPool.sendMessage;
+
 /**
  * @author HFL
  * @date 2022/5/16 15:17
@@ -24,17 +26,17 @@ import java.util.Arrays;
 */
 @Slf4j
 @Component
-@ServerEndpoint("/endPoint/{screen}")
+@ServerEndpoint("/endPoint/{username}")
 public class WebSocketServer {
 
     /**
      * 建立连接成功调用 (Session + 场景)
      */
     @OnOpen
-    public void onOpen(Session session,@PathParam("screen") String screen) throws IOException {
-        log.info("[onOpen][session({}) 接入, [screen: {}]", session, screen);
-        WebSocketServerPool.addDataConnect(session, screen);
-        //WebSocketServerPool.sendMessage(session, configurationScreenService.queryAllJsonById(screen));
+    public void onOpen(Session session,@PathParam("username") String username) throws IOException {
+        log.info("[onOpen][session({}) 接入, [username: {}]", session, username);
+        WebSocketServerPool.addDataConnect(session, username);
+        //WebSocketServerPool.sendMessage(session, configurationScreenService.queryAllJsonById(username));
     }
 
     /**
@@ -64,10 +66,12 @@ public class WebSocketServer {
      * @param message 数据消息
      */
     @OnMessage
-    public void onMessage(Session session, String message) {
+    public void onMessage(Session session, String message) throws IOException {
         log.info("[onOpen][session({}) 接收到一条消息({})]", session, message);
         // TODO: 2022/5/18 对于客户端发送的指令信息，解析后进行对应的逻辑处理
-        System.out.println(Arrays.toString(message.getBytes(StandardCharsets.UTF_8)));
+
+        //sendMessage(session,"服务端向客户端发送："+message);
+
     }
 
 }

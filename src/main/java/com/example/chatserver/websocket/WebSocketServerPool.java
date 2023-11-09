@@ -65,7 +65,7 @@ public class WebSocketServerPool {
     }
 
     /**
-     * Websocket消息推送
+     * Websocket消息推送：将消息推送给客户端
      * @param session 连接
      * @param message 消息主体
      * @throws IOException I/O异常
