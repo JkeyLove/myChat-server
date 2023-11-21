@@ -3,15 +3,15 @@ package com.example.chatserver.websocket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static com.example.chatserver.websocket.WebSocketServerPool.sendMessage;
+import static com.example.chatserver.websocket.WebSocketServerPool.*;
+
 
 /**
  * @author HFL
@@ -26,17 +26,19 @@ import static com.example.chatserver.websocket.WebSocketServerPool.sendMessage;
 */
 @Slf4j
 @Component
-@ServerEndpoint("/endPoint/{username}")
+@ServerEndpoint("/endPoint/{screen}")
 public class WebSocketServer {
 
     /**
      * 建立连接成功调用 (Session + 场景)
      */
     @OnOpen
-    public void onOpen(Session session,@PathParam("username") String username) throws IOException {
-        log.info("[onOpen][session({}) 接入, [username: {}]", session, username);
-        WebSocketServerPool.addDataConnect(session, username);
-        //WebSocketServerPool.sendMessage(session, configurationScreenService.queryAllJsonById(username));
+    public void onOpen(Session session,@PathParam("screen") String screen,EndpointConfig config) throws IOException {
+        log.info("[onOpen] session:{} 接入, screen: {}", session, screen);
+        WebSocketServerPool.addDataConnect(session, screen);
+
+
+        //WebSocketServerPool.sendMessage(session, configurationScreenService.queryAllJsonById(screen));
     }
 
     /**
@@ -45,7 +47,7 @@ public class WebSocketServer {
      */
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-        log.info("[onClose][session({}) 连接关闭。关闭原因是({})}]", session, closeReason);
+        log.info("[onClose] session:{} 连接关闭。关闭原因是({})}", session, closeReason);
         WebSocketServerPool.removeConnect(session);
     }
 
@@ -56,7 +58,7 @@ public class WebSocketServer {
      */
     @OnError
     public void onError(Session session, Throwable throwable) {
-        log.info("[onClose][session({}) 发生异常]", session, throwable);
+        log.info("[onClose]session:{} 发生异常", session, throwable);
         WebSocketServerPool.removeConnect(session);
     }
 
@@ -67,9 +69,27 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(Session session, String message) throws IOException {
-        log.info("[onOpen][session({}) 接收到一条消息({})]", session, message);
+        log.info("[onOpen] session:{} 接收到一条消息:{}", session, message);
         // TODO: 2022/5/18 对于客户端发送的指令信息，解析后进行对应的逻辑处理
+        //找到该客户端session对应的房间screen
+        String screen = getDataConnect().get(session);
+        log.info("房间号:{}",screen);
 
+
+        //向对应房间screen,发送信息
+        getDataConnect().entrySet().stream()
+                        .filter(entry->entry.getValue().equals(screen))
+                                .forEach(entry->
+                                        {
+                                            try {
+                                                log.info("服务端-->客户端{} 发送消息：{},房间号：{}",entry.getKey(),message,entry.getValue());
+                                                sendMessage(entry.getKey(),"服务端向客户端发送："+message);
+                                            } catch (IOException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        }
+                                        );
+        // sendMessage(session,"服务端向客户端发送："+message);
         //sendMessage(session,"服务端向客户端发送："+message);
 
     }

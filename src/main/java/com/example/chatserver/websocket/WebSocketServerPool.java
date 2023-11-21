@@ -1,5 +1,7 @@
 package com.example.chatserver.websocket;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.Iterator;
@@ -12,6 +14,7 @@ import java.util.concurrent.ConcurrentMap;
  * @date 2022/5/16 9:39
  * Websocket连接池、对连接池内连接操作 和数据推送方法
  */
+@Slf4j
 public class WebSocketServerPool {
 
     /**

@@ -17,6 +17,8 @@ public class SoloRoom {
 
     public SoloRoom(){
 
+        //webSocketServer.onOpen();
+
 
 
     }
