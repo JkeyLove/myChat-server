@@ -3,6 +3,8 @@ package com.example.chatserver.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.chatserver.domain.entity.Message;
 
+import java.util.List;
+
 
 /**
  * (Message)表服务接口
@@ -12,7 +14,9 @@ import com.example.chatserver.domain.entity.Message;
  */
 public interface MessageService extends IService<Message> {
 
-    public void saveMessage(String username,String content);
+    public void saveMessage(Message message);
+
+    public List<Message> queryMessage(String username);
 
 }
 

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * (Message)表服务实现类
@@ -20,13 +21,16 @@ import javax.annotation.Resource;
 @Slf4j
 public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> implements MessageService {
 
-    @Resource
-    private MessageMapper messageMapper;
 
     @Override
-    public void saveMessage(String username, String content) {
-        //messageMapper.insert(new Message(666,username,content,null));
-        log.info("输出");
+    public void saveMessage(Message message) {
+
+        save(message);
+    }
+
+    @Override
+    public List<Message> queryMessage(String username) {
+        return null;
     }
 }
 

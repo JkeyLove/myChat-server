@@ -12,8 +12,7 @@ import javax.annotation.Resource;
 @Slf4j
 public class TestController {
 
-    @Resource
-    private MessageMapper messageMapper;
+
 
     @GetMapping("/test")
     public String testController(){
@@ -21,11 +20,11 @@ public class TestController {
         return "Get请求成功";
     }
 
-    @GetMapping("/save")
+    @GetMapping("/chat")
     public String saveController(){
-        log.info("保存消息");
-        //messageMapper.insert(new Message(1,"爱哥","评论",null));
-        return "保存消息";
+
+    return null;
+
     }
 
 

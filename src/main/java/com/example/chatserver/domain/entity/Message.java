@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -23,6 +24,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @TableName("message")
 public class Message  {
     @TableId
@@ -32,6 +34,8 @@ public class Message  {
     private String username;
 
     private String content;
+
+    private String screen;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

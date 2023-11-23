@@ -1,7 +1,9 @@
 package com.example.chatserver.websocket;
 
+import com.example.chatserver.domain.entity.Message;
 import com.example.chatserver.mapper.MessageMapper;
 import com.example.chatserver.service.MessageService;
+import com.example.chatserver.service.impl.MessageServiceImpl;
 import com.example.chatserver.utils.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,8 +15,6 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 
-import static com.example.chatserver.websocket.Message.messageList;
-import static com.example.chatserver.websocket.Message.messageMap;
 import static com.example.chatserver.websocket.WebSocketServerPool.*;
 
 
@@ -39,9 +39,13 @@ public class WebSocketServer {
      */
     @OnOpen
     public void onOpen(Session session,@PathParam("screen") String screen,@PathParam("username") String username,EndpointConfig config) throws IOException {
-        log.info("[onOpen] session: {} 接入,用户名: {}, screen: {}", session, username ,screen);
         log.info("-----------------------------------");
+        log.info("[onOpen] session: {} 接入,用户名: {}, screen: {}", session, username ,screen);
+
         WebSocketServerPool.addDataConnect(session, screen);
+
+        //群发消息：xx用户已进入聊天室
+        transmit(screen,username,username + "进入聊天室");
         //WebSocketServerPool.sendMessage(session, configurationScreenService.queryAllJsonById(screen));
     }
 
@@ -73,6 +77,7 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(Session session, String message,@PathParam("username") String username) throws IOException {
+        log.info("-----------------------------------");
         log.info("[onMessage] 用户: {} 接收到一条消息:{}", username, message);
         // TODO: 2022/5/18 对于客户端发送的指令信息，解析后进行对应的逻辑处理
 
@@ -82,26 +87,33 @@ public class WebSocketServer {
         String screen = getDataConnect().get(session);
 
         //向对应房间screen,发送信息
-        getDataConnect().entrySet().stream()
-                        .filter(entry->entry.getValue().equals(screen))
-                        .forEach(entry->
-                                {
-                                    try {
-                                        log.info("-----------------------------------");
-                                        log.info("用户: {}--> 房间号： {} 发送消息：{}",username,entry.getValue(),message);
-                                        sendMessage(entry.getKey(),"服务端向客户端发送："+message);
-                                    } catch (IOException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }
-                                );
-        //向消息集合中添加消息记录
+        transmit(screen,username,message);
+
         //把消息存入数据库
-        MessageMapper messageMapper = SpringContextUtil.getContext().getBean(MessageMapper.class);
-        messageMapper.insert(new com.example.chatserver.domain.entity.Message(null,username,message,null));
-
-
+        MessageService messageService = SpringContextUtil.getContext().getBean(MessageServiceImpl.class);
+        Message message1 = Message.builder()
+                .username(username)
+                .content(message)
+                .screen(screen)
+                .build();
+        messageService.saveMessage(message1);
 
     }
+    public void transmit(String screen,String username,String message){
+        getDataConnect().entrySet().stream()
+                .filter(entry->entry.getValue().equals(screen))
+                .forEach(entry->
+                        {
+                            try {
+                                log.info("-----------------------------------");
+                                log.info("用户: {} --> 房间号： {} 客户端：{} 发送消息：{}",username,entry.getValue(),entry.getKey(),message);
+                                sendMessage(entry.getKey(),"服务端向客户端发送："+message);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                );
+    }
+
 
 }
