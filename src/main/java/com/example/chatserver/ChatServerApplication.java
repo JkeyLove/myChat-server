@@ -1,5 +1,6 @@
 package com.example.chatserver;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -15,6 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 入参：1
  */
 @SpringBootApplication
+@MapperScan
 public class ChatServerApplication {
 
     public static void main(String[] args) {
