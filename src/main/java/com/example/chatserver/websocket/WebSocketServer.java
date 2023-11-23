@@ -96,6 +96,7 @@ public class WebSocketServer {
                 .content(message)
                 .screen(screen)
                 .build();
+
         messageService.saveMessage(message1);
 
     }
