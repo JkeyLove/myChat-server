@@ -89,6 +89,7 @@ public class WebSocketServer {
         //向对应房间screen,发送信息
         transmit(screen,username,message);
 
+
         //把消息存入数据库
         MessageService messageService = SpringContextUtil.getContext().getBean(MessageServiceImpl.class);
         Message message1 = Message.builder()
