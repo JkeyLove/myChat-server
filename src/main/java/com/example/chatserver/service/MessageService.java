@@ -16,7 +16,7 @@ public interface MessageService extends IService<Message> {
 
     public void saveMessage(Message message);
 
-    public List<Message> queryMessage(String username);
+    public List<Message> queryMessage(String screen);
 
 }
 

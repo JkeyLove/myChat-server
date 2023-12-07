@@ -29,8 +29,10 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     }
 
     @Override
-    public List<Message> queryMessage(String username) {
+    public List<Message> queryMessage(String screen) {
         return null;
     }
+
+
 }
 

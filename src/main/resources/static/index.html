@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajax请求示例</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<!-- 输入屏幕和用户名的文本框 -->
+<label for="screenInput">Screen:</label>
+<input type="text" id="screenInput" placeholder="Enter screen">
+
+<label for="usernameInput">Username:</label>
+<input type="text" id="usernameInput" placeholder="Enter username">
+
+<button id="submitButton">Submit</button>
+
+<!-- 消息显示区域 -->
+<div id="messageContainer"></div>
+
+<script>
+    $(document).ready(function () {
+        // 提交按钮点击事件
+        $("#submitButton").click(function () {
+            // 获取屏幕和用户名的值
+            var screen = $("#screenInput").val();
+            var username = $("#usernameInput").val();
+
+            // 发送Ajax请求
+            $.ajax({
+                type: "GET",
+                url: "/chat/" + screen + "/" + username,
+                success: function (response) {
+                    // 请求成功的处理逻辑
+                    console.log("成功", response);
+
+                    // 渲染消息数据到页面
+                    renderMessages(response.data);
+                },
+                error: function (error) {
+                    // 请求失败的处理逻辑
+                    console.log("失败", error);
+                }
+            });
+        });
+
+        // 渲染消息数据到页面的函数
+        function renderMessages(messages) {
+            var messageContainer = $("#messageContainer");
+
+            // 清空容器
+            messageContainer.empty();
+
+            // 遍历消息数据并添加到容器中
+            messages.forEach(function (message) {
+                var messageElement = $("<div>");
+                messageElement.text(message.username + ": " + message.content);
+                messageContainer.append(messageElement);
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

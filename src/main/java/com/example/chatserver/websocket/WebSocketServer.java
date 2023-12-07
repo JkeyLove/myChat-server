@@ -1,11 +1,17 @@
 package com.example.chatserver.websocket;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.example.chatserver.common.ResponseResult;
 import com.example.chatserver.domain.entity.Message;
 import com.example.chatserver.mapper.MessageMapper;
 import com.example.chatserver.service.MessageService;
 import com.example.chatserver.service.impl.MessageServiceImpl;
 import com.example.chatserver.utils.SpringContextUtil;
+import com.example.chatserver.utils.UuidUtil;
+import com.fasterxml.jackson.databind.deser.std.UUIDDeserializer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.propertyeditors.UUIDEditor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -14,7 +20,13 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
+import static com.alibaba.fastjson.JSON.toJSONString;
+import static com.example.chatserver.utils.UuidUtil.generateNumericUUID;
 import static com.example.chatserver.websocket.WebSocketServerPool.*;
 
 
@@ -45,7 +57,15 @@ public class WebSocketServer {
         WebSocketServerPool.addDataConnect(session, screen);
 
         //群发消息：xx用户已进入聊天室
-        transmit(screen,username,username + "进入聊天室");
+        Message message1 = Message.builder()
+                .id(generateNumericUUID(18))
+                .username(username)
+                .content(username + "进入聊天室")
+                .screen(screen)
+                .createTime(LocalDateTime.now())
+                .build();
+        transmit(screen,username,message1);
+
         //WebSocketServerPool.sendMessage(session, configurationScreenService.queryAllJsonById(screen));
     }
 
@@ -77,17 +97,13 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(Session session, String message,@PathParam("username") String username) throws IOException {
+
         log.info("-----------------------------------");
         log.info("[onMessage] 用户: {} 接收到一条消息:{}", username, message);
         // TODO: 2022/5/18 对于客户端发送的指令信息，解析后进行对应的逻辑处理
 
-        //String token = request.getHeader("Authorization");
-
         //找到该客户端session对应的房间screen
         String screen = getDataConnect().get(session);
-
-        //向对应房间screen,发送信息
-        transmit(screen,username,message);
 
         //把消息存入数据库
         MessageService messageService = SpringContextUtil.getContext().getBean(MessageServiceImpl.class);
@@ -96,19 +112,27 @@ public class WebSocketServer {
                 .content(message)
                 .screen(screen)
                 .build();
-
         messageService.saveMessage(message1);
 
+        //向对应房间screen,发送信息
+        transmit(screen,username,message1);
+
     }
-    public void transmit(String screen,String username,String message){
+    public void transmit(String screen, String username, Message message1){
         getDataConnect().entrySet().stream()
                 .filter(entry->entry.getValue().equals(screen))
                 .forEach(entry->
                         {
                             try {
                                 log.info("-----------------------------------");
-                                log.info("用户: {} --> 房间号： {} 客户端：{} 发送消息：{}",username,entry.getValue(),entry.getKey(),message);
-                                sendMessage(entry.getKey(),"服务端向客户端发送："+message);
+                                log.info("用户: {} --> 房间号： {} 客户端：{} 发送消息：{}",username,entry.getValue(),entry.getKey(),message1.getContent());
+
+                                ResponseResult<Object> responseResult = new ResponseResult<>();
+
+                                List<Message> message = new ArrayList<>();
+                                message.add(message1);
+                                sendMessage(entry.getKey(),toJSONString(responseResult.ok(message)));
+//                                sendMessage();
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
