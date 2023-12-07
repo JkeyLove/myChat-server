@@ -20,7 +20,7 @@ import java.util.List;
 //@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public interface MessageMapper extends BaseMapper<Message> {
 
-    @Select("select  * from chat_server.message where screen = screen")
+    @Select("select  * from chat_server.message where screen = #{screen}")
     List<Message> queryMessage(String screen);
 
 }

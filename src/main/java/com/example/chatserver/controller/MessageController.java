@@ -18,9 +18,8 @@ public class MessageController {
     @Resource
     private MessageMapper messageMapper;
 
-    @GetMapping("/chat/{screen}/{username}")
-    public ResponseResult messageInitController(@PathVariable("screen") String screen,
-                                        @PathVariable("username") String username) {
+    @GetMapping("/chat/{screen}")
+    public ResponseResult messageInitController(@PathVariable("screen") String screen) {
         // 从数据库获取消息
         List<Message> messageList = messageMapper.queryMessage(screen);
         return ResponseResult.okResult(messageList);

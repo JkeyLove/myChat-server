@@ -59,6 +59,13 @@
         };
       }
 
+      // 显示消息的函数
+      function displayMessage(message) {
+        var messageList = $("#messageList");
+        var listItem = $("<li>").text(`[${message.username}] ${message.content}`);
+        messageList.append(listItem);
+      }
+
 
       // 添加房间
       $("#create").click(function() {
@@ -76,7 +83,7 @@
 
       });
 
-      // 使用事件代理连接websocket
+      // 点击进入房间，连接websocket,使用事件代理连接websocket
       $(document).on("click", ".room", function () {
         // 获取roomId
         var roomId = $(this).attr("id");
@@ -84,8 +91,30 @@
         console.log("获取roomId：" + roomId);
         // 连接websocket
         connectWebSocket(roomId);
-      });
+        // 发送Ajax请求,获取聊天记录
+        $.ajax({
+          type: "GET",
+          url: "http://127.0.0.1:8848/chat/"  + roomId,
+          success: function (response) {
+            // 请求成功的处理逻辑
+            console.log("成功", response);
 
+            if (response.data && Array.isArray(response.data)) {
+              response.data.forEach((message) => {
+                console.log("Message:", message);
+                // 渲染消息数据到页面
+                displayMessage(message)
+              })
+            }
+            //displayMessage(response.data);
+          },
+          error: function (error) {
+            // 请求失败的处理逻辑
+            console.log("失败", error);
+          }
+        });
+
+      });
 
       // 发送消息按钮点击事件
       $("#sendMessage").click(function () {
@@ -102,18 +131,7 @@
       });
 
 
-      // 显示消息的函数
-      function displayMessage(message) {
-        var messageList = $("#messageList");
-        var listItem = $("<li>").text(`[${message.username}] ${message.content}`);
-        messageList.append(listItem);
-      }
-
-
-
     });
-
-
   </script>
 
 
