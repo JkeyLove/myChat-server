@@ -42,10 +42,15 @@
       // 连接 WebSocket 的函数
       function connectWebSocket(roomId) {
 
+        // 如果已存在 WebSocket 连接，先关闭它
+        if (socket) {
+          socket.close();
+        }
+
         $("#messageList").empty();
 
         // 在这里替换为你的 WebSocket 服务器地址
-        socket = new WebSocket("ws://127.0.0.1:8848/endPoint/"+ roomId +"/ojc");
+        socket = new WebSocket("ws://127.0.0.1:8848/endPoint/"+ roomId +"/" + username);
 
         // 连接成功时触发
         socket.onopen = function (event) {
@@ -70,9 +75,20 @@
       // 显示消息的函数
       function displayMessage(message) {
         var messageList = $("#messageList");
-        var listItem = $("<li>").html(`[${message.username}]：<br>
-    <span class="messageTime">${message.createTime}</span><br>
-    ${message.content}`);
+        var listItem;
+
+        if (message.username === username) {
+          // 如果消息来自当前用户，将其显示在右侧
+          listItem = $("<li class='rightMessage'>").html(`
+        <span class="messageTime">${message.createTime}</span><br>
+        ${message.content}`);
+        } else {
+          // 如果消息来自其他用户，将其显示在左侧
+          listItem = $("<li>").html(`[${message.username}]：<br>
+        <span class="messageTime">${message.createTime}</span><br>
+        ${message.content}`);
+        }
+
         messageList.append(listItem);
 
         // 将滚动条拉到最下面
@@ -234,6 +250,11 @@
     /* 悬停效果 */
     #sendMessage:hover {
       opacity: 0.8;
+    }
+
+    /*右侧显示*/
+    .rightMessage {
+      text-align: right;
     }
 
   </style>
