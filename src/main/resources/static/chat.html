@@ -8,14 +8,14 @@
   <body>
 
   <div id="roomButton">
-    <button id="room1" class="room">房间1</button>
+    <span><button id="room1" class="room">房间1</button></span>
   </div>
 
   <div>
     <button id="create">创建房间</button>
   </div>
 
-  <div>
+  <div id="inPut">
     <input type="text" id="messageInput" placeholder="输入消息">
     <button id="sendMessage">发送消息</button>
   </div>
@@ -26,12 +26,19 @@
 
   </body>
 
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://s3.pstatp.com/cdn/expire-1-M/jquery/3.3.1/jquery.min.js"></script>
   <script type="text/javascript">
 
 
     $(document).ready(function() {
+      let username
       var socket;
+
+      // 在其他页面获取用户名
+      username = window.localStorage.getItem('username')
+      console.log("获取用户名" + username)
+      alert(username)
+
       // 连接 WebSocket 的函数
       function connectWebSocket(roomId) {
 
@@ -55,6 +62,7 @@
 
         // 连接关闭时触发
         socket.onclose = function (event) {
+          window.localStorage.removeItem('username')
           console.log("WebSocket连接已关闭");
         };
       }
@@ -62,8 +70,13 @@
       // 显示消息的函数
       function displayMessage(message) {
         var messageList = $("#messageList");
-        var listItem = $("<li>").text(`[${message.username}] ${message.content}`);
+        var listItem = $("<li>").html(`[${message.username}]：<br>
+    <span class="messageTime">${message.createTime}</span><br>
+    ${message.content}`);
         messageList.append(listItem);
+
+        // 将滚动条拉到最下面
+        messageList.scrollTop(messageList[0].scrollHeight);
       }
 
 
@@ -77,7 +90,7 @@
 
         console.log("最后一个id为"+numberPart)
         // 创建一个新按钮，将数字拼接到 "房间" 后面
-        var newButton = $(`<button class="room" id="room${numberPart}">`).text(`房间 ${numberPart}`);
+        var newButton = $(`<button class="room" id="room${numberPart} ">`).text(`房间 ${numberPart}`);
 
         $("#roomButton").append(newButton);
 
@@ -87,7 +100,7 @@
       $(document).on("click", ".room", function () {
         // 获取roomId
         var roomId = $(this).attr("id");
-        alert("已进入聊天室"+roomId)
+        //alert("已进入聊天室"+roomId)
         console.log("获取roomId：" + roomId);
         // 连接websocket
         connectWebSocket(roomId);
@@ -134,6 +147,96 @@
     });
   </script>
 
+  <style>
+    #messageList {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 90%;
+      width: 70%;
+      background-color: #f2f2f2; /* 可选：添加背景颜色 */
+      border-left: 1px solid #ccc; /* 可选：添加左侧边框 */
+      box-sizing: border-box;
+      overflow: auto; /* 如果内容过多，添加垂直滚动条 */
+    }
+
+    #messageList li {
+      background-color: pink;
+      padding: 8px;
+      margin-bottom: 8px;
+      border-radius: 5px;
+    }
+
+    .messageTime {
+      font-size: 12px; /* 调整时间字体大小 */
+      color: #888; /* 可选：调整时间字体颜色 */
+    }
+
+    /* 房间按钮样式 */
+    .room {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    /* 创建房间按钮样式 */
+    #create {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* 按钮悬停效果 */
+    .room:hover, #create:hover {
+      opacity: 0.8;
+    }
+
+    /* 输入框容器样式 */
+    #inPut {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* 输入框样式 */
+    #messageInput {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 90%;
+      margin-right: 10px; /* 可选：增加输入框与按钮之间的间距 */
+    }
+
+    /* 按钮样式 */
+    #sendMessage {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 50%;
+    }
+
+    /* 悬停效果 */
+    #sendMessage:hover {
+      opacity: 0.8;
+    }
+
+  </style>
 
 
 </html>

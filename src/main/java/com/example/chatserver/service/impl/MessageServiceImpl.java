@@ -3,12 +3,14 @@ package com.example.chatserver.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.chatserver.domain.entity.Message;
+import com.example.chatserver.domain.entity.User;
 import com.example.chatserver.mapper.MessageMapper;
+import com.example.chatserver.mapper.UserMapper;
 import com.example.chatserver.service.MessageService;
+import com.example.chatserver.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -33,6 +35,13 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         return null;
     }
 
+
+    /**
+     * (User)表服务实现类
+     *
+     * @author makejava
+     * @since 2023-12-14 10:57:00
+     */
 
 }
 
