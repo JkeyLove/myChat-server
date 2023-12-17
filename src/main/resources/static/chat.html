@@ -35,9 +35,9 @@
       var socket;
 
       // 在其他页面获取用户名
-      username = window.localStorage.getItem('username')
+      username =  window.localStorage.getItem('username')
       console.log("获取用户名" + username)
-      alert(username)
+      alert("欢迎你：" + username)
 
       // 连接 WebSocket 的函数
       function connectWebSocket(roomId) {
@@ -50,7 +50,7 @@
         $("#messageList").empty();
 
         // 在这里替换为你的 WebSocket 服务器地址
-        socket = new WebSocket("ws://127.0.0.1:8848/endPoint/"+ roomId +"/" + username);
+        socket = new WebSocket("ws://127.0.0.1:8848/endPoint/" + roomId +"/" + username);
 
         // 连接成功时触发
         socket.onopen = function (event) {
@@ -67,7 +67,7 @@
 
         // 连接关闭时触发
         socket.onclose = function (event) {
-          window.localStorage.removeItem('username')
+          //localStorage.clear();
           console.log("WebSocket连接已关闭");
         };
       }

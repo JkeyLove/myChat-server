@@ -74,7 +74,20 @@ public class WebSocketServer {
      * @param session 连接
      */
     @OnClose
-    public void onClose(Session session, CloseReason closeReason) {
+    public void onClose(Session session, CloseReason closeReason,@PathParam("screen") String screen,@PathParam("username") String username) {
+
+        //群发消息：xx用户已离开聊天室
+        Message message1 = Message.builder()
+                .id(generateNumericUUID(18))
+                .username(username)
+                .content(username + "离开了聊天室")
+                .screen(screen)
+                .createTime(LocalDateTime.now())
+                .build();
+        transmit(screen,username,message1);
+
+
+
         log.info("[onClose] session:{} 连接关闭。关闭原因是({})}", session, closeReason);
         WebSocketServerPool.removeConnect(session);
     }
