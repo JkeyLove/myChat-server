@@ -35,9 +35,27 @@
       var socket;
 
       // 在其他页面获取用户名
-      username =  window.localStorage.getItem('username')
+      username =  localStorage.getItem('username')
       console.log("获取用户名" + username)
       alert("欢迎你：" + username)
+
+
+      window.addEventListener('beforeunload', function (e) {
+        // 在这里执行你想要的操作
+        var confirmationMessage = '确定要离开吗？';
+
+        // 如果需要显示一个确认提示框，可以设置confirmationMessage
+        // e.returnValue兼容旧版浏览器
+        e.returnValue = confirmationMessage;
+
+        $.ajax({
+          type: "POST",
+          url: "http://127.0.0.1:8848/logout/" + username,
+        });
+
+        return confirmationMessage;
+      });
+
 
       // 连接 WebSocket 的函数
       function connectWebSocket(roomId) {
@@ -67,7 +85,6 @@
 
         // 连接关闭时触发
         socket.onclose = function (event) {
-          //localStorage.clear();
           console.log("WebSocket连接已关闭");
         };
       }
@@ -123,7 +140,7 @@
         // 发送Ajax请求,获取聊天记录
         $.ajax({
           type: "GET",
-          url: "http://127.0.0.1:8848/chat/"  + roomId,
+          url: "http://127.0.0.1:8848/chat/"  + roomId + "/" + username,
           success: function (response) {
             // 请求成功的处理逻辑
             console.log("成功", response);

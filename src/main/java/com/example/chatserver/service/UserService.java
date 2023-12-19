@@ -15,5 +15,9 @@ import com.example.chatserver.domain.vo.UserLoginVO;
 public interface UserService extends IService<User> {
 
     UserLoginVO login(UserLoginRequest userLoginRequest);
+
+    void register(UserLoginRequest userLoginRequest);
+
+    void logout(String username);
 }
 
