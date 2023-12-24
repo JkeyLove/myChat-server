@@ -16,7 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 入参：1
  */
 @SpringBootApplication
-@MapperScan
+@MapperScan("com/example/chatserver/mapper")
 public class ChatServerApplication {
 
     public static void main(String[] args) {

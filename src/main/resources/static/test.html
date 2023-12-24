@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speech Synthesis with jQuery</title>
+</head>
+<body>
+
+<button id="speakButton">发音</button>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+  $(document).ready(function () {
+    // 检查浏览器是否支持语音合成
+    if ('speechSynthesis' in window) {
+      var synth = window.speechSynthesis;
+
+      // 监听按钮点击事件
+      $('#speakButton').on('click', function () {
+        // 创建 SpeechSynthesisUtterance 对象
+        var utterance = new SpeechSynthesisUtterance('你好，这是一个语音合成的例子。');
+
+        // 语音合成参数设置（可选）
+        utterance.lang = 'zh-CN'; // 语言设置为中文
+        utterance.rate = 1; // 语速，默认为1（正常速度）
+        utterance.pitch = 1; // 语调，默认为1（正常语调）
+
+        // 开始语音合成
+        synth.speak(utterance);
+      });
+    } else {
+      // 浏览器不支持语音合成
+      alert('抱歉，您的浏览器不支持语音合成。');
+    }
+  });
+</script>
+
+</body>
+</html>
+
