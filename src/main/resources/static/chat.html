@@ -7,8 +7,10 @@
 
   <body>
 
-  <div id="roomButton">
-    <span><button id="room1" class="room">房间1</button></span>
+  <div id="roomContainer">
+    <div id="roomButton">
+      <span><button id="room1" class="room">房间1</button></span>
+    </div>
   </div>
 
   <div>
@@ -214,7 +216,12 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      margin-bottom: 10px;
+      /*margin-bottom: 10px;*/
+      margin-bottom: 5px; /* 调整按钮之间的间距 */
+      max-width: 90px; /* 限制按钮的最大宽度 */
+      white-space: nowrap; /* 防止按钮文本换行 */
+      overflow: hidden; /* 隐藏溢出的文本 */
+      text-overflow: ellipsis; /* 显示省略号，以指示截断的文本 */
     }
 
     /* 创建房间按钮样式 */
@@ -273,6 +280,21 @@
     .rightMessage {
       text-align: right;
     }
+
+    #roomContainer {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #roomButton {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .room {
+
+    }
+
 
   </style>
 

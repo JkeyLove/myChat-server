@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Page</title>
+  <script src="https://s3.pstatp.com/cdn/expire-1-M/jquery/3.3.1/jquery.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #register-form {
+      max-width: 300px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+<div id="register-form">
+  <h2>Register</h2>
+  <form id="registerForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br>
+
+    <button type="submit" id="registerBtn">Register</button>
+  </form>
+</div>
+
+<script>
+  $(document).ready(function () {
+    // 添加注册按钮点击事件
+    $('#registerBtn').click(function () {
+      // 向后端发起注册请求
+      $.ajax({
+        url: 'http://127.0.0.1:8848/register', // 替换成实际的后端注册接口
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          username: $('#username').val(),
+          password: $('#password').val()
+        }),
+        success: function (response) {
+          if (response.msg === '操作成功') {
+            alert('注册成功，请登录');
+            window.location.href = 'index.html'; // 注册成功后跳转到登录页面
+          } else {
+            alert('注册失败，'+response.msg);
+          }
+        },
+        error: function () {
+          alert('错误');
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
+

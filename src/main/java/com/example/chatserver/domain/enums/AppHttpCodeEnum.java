@@ -25,7 +25,7 @@ public enum AppHttpCodeEnum {
 
     EMAIL_NOT_NULL(511,"邮箱不能为空"),
 
-    NICKNAME_EXIST(512, "昵称已存在"),
+    NICKNAME_EXIST(512, "用户名已存在"),
 
     CONTENT_VIOLATION(513,"内容违规,不予发送");
 

@@ -1,6 +1,8 @@
 package com.example.chatserver.domain.entity;
 
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +21,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("user")
 public class User  {
     @TableId
-    private Integer id;
+    private Long id;
 
 
     private String username;

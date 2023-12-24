@@ -2,7 +2,7 @@ package com.example.chatserver.controller;
 
 import com.example.chatserver.common.ResponseResult;
 import com.example.chatserver.domain.enums.AppHttpCodeEnum;
-import com.example.chatserver.domain.request.UserLoginRequest;
+import com.example.chatserver.domain.request.UserRegisterRequest;
 import com.example.chatserver.domain.vo.UserLoginVO;
 import com.example.chatserver.service.UserService;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +20,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    ResponseResult Login(@RequestBody UserLoginRequest userLoginRequest){
+    ResponseResult Login(@RequestBody UserRegisterRequest userLoginRequest){
 
         try{
             UserLoginVO userLoginVO = userService.login(userLoginRequest);
@@ -32,10 +32,8 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseResult register(@RequestBody UserLoginRequest userLoginRequest){
-
-        userService.register(userLoginRequest);
-        return null;
+    public ResponseResult register(@RequestBody UserRegisterRequest userLoginRequest){
+        return userService.register(userLoginRequest);
     }
 
     @PostMapping("/logout/{username}")
