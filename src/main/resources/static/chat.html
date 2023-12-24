@@ -83,6 +83,9 @@
           // 处理接收到的消息
           var message = JSON.parse(event.data);
           displayMessage(message.data[0]);
+
+          // 将滚动条拉到最下面
+          scrollMessageListToBottom();
         };
 
         // 连接关闭时触发
@@ -90,6 +93,13 @@
           console.log("WebSocket连接已关闭");
         };
       }
+
+      // 新增滚动到底部的函数
+      function scrollMessageListToBottom() {
+        var messageList = $("#messageList");
+        messageList.scrollTop(messageList[0].scrollHeight);
+      }
+
 
       // 显示消息的函数
       function displayMessage(message) {
@@ -182,7 +192,7 @@
     });
   </script>
 
-  <style>
+  <!--<style>
     #messageList {
       position: fixed;
       top: 0;
@@ -296,7 +306,116 @@
     }
 
 
-  </style>
+  </style>-->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
 
+    #roomContainer {
+      display: flex;
+      flex-direction: column;
+      margin: 10px;
+    }
+
+    #roomButton {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .room {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 5px;
+      max-width: 100px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #create {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .room:hover,
+    #create:hover {
+      opacity: 0.8;
+    }
+
+    #inPut {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    #messageInput {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 90%;
+      margin-right: 10px;
+    }
+
+    #sendMessage {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 50%;
+    }
+
+    #sendMessage:hover {
+      opacity: 0.8;
+    }
+
+    #messageList {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 90%;
+      width: 70%;
+      background-color: #f2f2f2;
+      border-left: 1px solid #ccc;
+      box-sizing: border-box;
+      overflow: auto;
+      padding: 10px;
+    }
+
+    #messageList li {
+      background-color: #ffffff;
+      padding: 8px;
+      margin-bottom: 8px;
+      border-radius: 5px;
+    }
+
+    .messageTime {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .rightMessage {
+      text-align: right;
+    }
+  </style>
 
 </html>

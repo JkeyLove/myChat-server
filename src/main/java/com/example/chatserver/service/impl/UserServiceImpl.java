@@ -53,6 +53,7 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
 
             log.info("注册成功");
         }
+        System.out.println(ResponseResult.okResult().toString());
         return ResponseResult.okResult();
     }
 
