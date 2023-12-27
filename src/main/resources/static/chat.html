@@ -158,23 +158,26 @@
         if (message.username === username) {
           // 如果消息来自当前用户，将其显示在右侧
           listItem = $("<li class='rightMessage'>").html(`
-            <span class="messageTime">${message.createTime}</span><br>
-            ${message.content}`);
+      <span class="messageTime">${message.createTime}</span><br>
+      ${message.content}`);
         } else {
           // 如果消息来自其他用户，将其显示在左侧
           listItem = $("<li>").html(`[${message.username}]：<br>
-            <span class="messageTime">${message.createTime}</span><br>
-            ${message.content}`);
+      <span class="messageTime">${message.createTime}</span><br>
+      ${message.content}`);
         }
 
         // 判断消息类型，如果长度大于100，认为是Base64格式的语音消息
         if (message.content.length > 100) {
+          // 只添加语音消息，不添加文本消息部分
+          listItem.empty(); // 清空列表项内容
           listItem.append(`<audio controls>
-            <source src="data:audio/mp3;base64,${message.content}" type="audio/mp3">
-            Your browser does not support the audio tag.
-        </audio>`);
+      <source src="data:audio/mp3;base64,${message.content}" type="audio/mp3">
+      Your browser does not support the audio tag.
+    </audio>`);
         }
 
+        // 添加完整的消息到消息列表
         messageList.append(listItem);
 
         // 将滚动条拉到最下面
