@@ -19,6 +19,7 @@ public interface UserMapper extends BaseMapper<User> {
     User queryByUsername(String username);
 
 
-
+    @Select("select is_vip from user where username = #{username}")
+    Integer queryVip(String username);
 }
 
