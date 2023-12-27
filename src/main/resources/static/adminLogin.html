@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>管理员，欢迎你！</title>
     <script src="https://s3.pstatp.com/cdn/expire-1-M/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 
 <div id="login-form">
+    <!-- 返回箭头链接 -->
+    <a href="http://127.0.0.1:8848/index.html" class="back-link">
+        <div style="text-align: left; margin-bottom: 10px;">
+            <!-- Unicode箭头符号 -->
+            <span class="arrow">&#8592;</span> 返回
+        </div>
+    </a>
+
     <h2>登录</h2>
     <form id="loginForm">
         <label for="username">用户名:</label>
@@ -18,38 +26,20 @@
         <input type="password" id="password" name="password" required><br><br>
 
         <button type="button" id="loginBtn">登录</button>
-        <button type="button" id="registerBtn">注册</button>
-
-        <!-- 新添加的管理员登录按钮 -->
-        <button type="button" id="adminLoginBtn">管理员登录</button>
     </form>
-
-
-
 </div>
 
 <script>
     $(document).ready(function () {
 
-        //管理员登录按钮点击事件
-        $('#adminLoginBtn').click(function () {
-            // 跳转到管理员登录界面，替换成实际的管理员登录页面地址
-            window.location.href = 'http://127.0.0.1:8848/adminLogin.html';
-        });
-
-        $('#registerBtn').click(function () {
-            window.location.href = 'http://127.0.0.1:8848/register.html';
-        });
 
         $('#loginBtn').click(function () {
             var username = $('#username').val();
             var password = $('#password').val();
 
-
-
             // 向后端发起异步请求
             $.ajax({
-                url: 'http://127.0.0.1:8848/login', // 替换成实际的后端登录验证接口
+                url: 'http://127.0.0.1:8848/adminLogin', // 替换成实际的后端登录验证接口
                 type: 'POST',
                 contentType: 'application/json', // 更改内容类型
                 data: JSON.stringify({ username: username, password: password }),
@@ -57,13 +47,9 @@
                     // 根据后端返回的结果进行处理
                     if (response.msg==='操作成功') {
                         console.log(response.msg==='登录成功')
-                        console.log(response.data.username)
-                        window.localStorage.setItem('username',response.data.username)
-
-
                         console.log(username)
                         // 登录成功，跳转到指定页面
-                        window.location.href = 'http://127.0.0.1:8848/chat.html';
+                        window.location.href = 'http://127.0.0.1:8848/admin.html';
                     } else {
                         // 登录失败，显示提示信息
                         alert('登录失败,账号或密码错误');
@@ -71,7 +57,7 @@
                 },
                 error: function () {
                     // 处理错误情况
-                    alert('错误');
+                    alert('登录失败,账号或密码错误');
                 }
             });
         });
@@ -139,6 +125,23 @@
 
     #registerBtn:hover {
         background-color: #2980b9;
+    }
+
+    /* 返回按钮样式 */
+    a.back-link {
+        text-decoration: none;
+        color: #3498db; /* 链接颜色 */
+        display: flex;
+        align-items: center;
+    }
+
+    a.back-link:hover {
+        color: #2980b9; /* 链接悬停时的颜色 */
+    }
+
+    a.back-link .arrow {
+        font-size: 1.2em; /* 箭头图标的大小 */
+        margin-right: 5px; /* 箭头与文字的间距 */
     }
 
 </style>

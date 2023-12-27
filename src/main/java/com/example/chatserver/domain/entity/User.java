@@ -23,14 +23,16 @@ public class User  {
     @TableId
     private Long id;
 
-
     private String username;
 
     private String password;
 
+    /**
+     * 0:普通用户
+     * 1：会员
+     * 2：管理员
+     */
     private Integer isVip;
-
-
 
 }
 

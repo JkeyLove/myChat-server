@@ -38,7 +38,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     public List<Message> queryMessage(String screen, String username) {
         //判断是不是vip用户，如果是则查询消息记录
         Integer vip = userMapper.queryVip(username);
-        if (vip == 1){
+        if (vip == 1 || vip == 2){
             return messageMapper.queryMessage(screen);
         }
         //非会员不返回消息记录

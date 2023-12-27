@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员主页</title>
+</head>
+<body>
+<h1>用户列表</h1>
+
+<div id="userList">
+    <!-- 用户列表将在这里显示 -->
+</div>
+
+<button id="confirmButton">确定</button>
+
+<script src="https://s3.pstatp.com/cdn/expire-1-M/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 封装获取和展示用户列表的逻辑
+        function getUserList() {
+            $.ajax({
+                type: "GET",
+                url: "http://127.0.0.1:8848/user",
+                success: function (response) {
+                    // 请求成功的处理逻辑
+                    console.log("成功", response);
+
+                    // 清空用户列表
+                    $("#userList").empty();
+
+                    // 遍历用户列表并添加到页面
+                    for (var i = 0; i < response.data.length; i++) {
+                        var user = response.data[i];
+                        var username = user.username;
+                        var isVip = user.isVip ? "VIP" : "普通用户";
+
+                        // 创建用户列表项
+                        var listItem = $("<div>").text("用户名: " + username + ", 类型: " + isVip);
+
+                        // 创建两个 radio 按钮，一个表示 status 为 0，另一个表示 status 为 1
+                        var radioInput0 = $("<input>")
+                            .attr("type", "radio")
+                            .attr("name", "vipStatus_" + username)
+                            .attr("value", "0");
+
+                        var radioInput1 = $("<input>")
+                            .attr("type", "radio")
+                            .attr("name", "vipStatus_" + username)
+                            .attr("value", "1");
+
+                        // 添加到用户列表项
+                        listItem.append(radioInput0);
+                        listItem.append(" 设置普通用户 ");
+
+                        listItem.append(radioInput1);
+                        listItem.append(" 设为会员 ");
+
+                        // 添加到用户列表
+                        $("#userList").append(listItem);
+                    }
+                },
+                error: function (error) {
+                    // 请求失败的处理逻辑
+                    console.log("失败", error);
+                }
+            });
+        }
+
+        // 页面加载时获取用户列表
+        getUserList();
+
+        // 确定按钮点击事件
+        $("#confirmButton").click(function () {
+            // 收集所选 radio 按钮的值和相应的用户名
+            var selectedRadio = $("[name^='vipStatus_']:checked");
+            if (selectedRadio.length === 1) {
+                var username = selectedRadio.attr("name").replace("vipStatus_", "");
+                var status = selectedRadio.val();
+
+                // 构造一个包含 username 和 status 属性的对象
+                var requestData = {
+                    username: username,
+                    status: status
+                };
+
+                // 发送异步请求到后端
+                $.ajax({
+                    type: "POST", // 或者你期望的HTTP方法
+                    url: "http://127.0.0.1:8848/user",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestData),
+                    success: function (response) {
+                        // 请求成功的处理逻辑
+                        console.log("更新成功", response);
+
+                        // 更新用户列表
+                        getUserList();
+                    },
+                    error: function (error) {
+                        // 请求失败的处理逻辑
+                        console.log("更新失败", error);
+                    }
+                });
+            } else {
+                console.log("请选择一个用户进行操作");
+            }
+        });
+    })
+</script>
+
+<style>
+    body {
+        font-family: 'Microsoft YaHei', sans-serif;
+        margin: 20px;
+        padding: 20px;
+        background-color: #f8f8f8;
+    }
+
+    h1 {
+        color: #333;
+        text-align: center;
+    }
+
+    #userList {
+        margin-top: 20px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #userList div {
+        margin: 10px 0;
+    }
+
+    input[type="radio"] {
+        margin-right: 5px;
+    }
+
+    #confirmButton {
+        display: block;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #confirmButton:hover {
+        background-color: #45a049;
+    }
+</style>
+</body>
+</html>
