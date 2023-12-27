@@ -154,20 +154,31 @@
       function displayMessage(message) {
         var messageList = $("#messageList");
         var listItem;
+
         if (message.username === username) {
           // 如果消息来自当前用户，将其显示在右侧
           listItem = $("<li class='rightMessage'>").html(`
-        <span class="messageTime">${message.createTime}</span><br>
-        ${message.content}`);
+            <span class="messageTime">${message.createTime}</span><br>
+            ${message.content}`);
         } else {
           // 如果消息来自其他用户，将其显示在左侧
           listItem = $("<li>").html(`[${message.username}]：<br>
-        <span class="messageTime">${message.createTime}</span><br>
-        ${message.content}`);
+            <span class="messageTime">${message.createTime}</span><br>
+            ${message.content}`);
         }
+
+        // 判断消息类型，如果长度大于100，认为是Base64格式的语音消息
+        if (message.content.length > 100) {
+          listItem.append(`<audio controls>
+            <source src="data:audio/mp3;base64,${message.content}" type="audio/mp3">
+            Your browser does not support the audio tag.
+        </audio>`);
+        }
+
         messageList.append(listItem);
+
         // 将滚动条拉到最下面
-        messageList.scrollTop(messageList[0].scrollHeight);
+        scrollMessageListToBottom();
       }
 
       // 添加房间
