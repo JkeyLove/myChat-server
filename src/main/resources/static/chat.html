@@ -98,21 +98,21 @@
       alert("欢迎你：" + username)
 
 
-      window.addEventListener('beforeunload', function (e) {
-        // 在这里执行你想要的操作
-        var confirmationMessage = '确定要离开吗？';
-
-        // 如果需要显示一个确认提示框，可以设置confirmationMessage
-        // e.returnValue兼容旧版浏览器
-        e.returnValue = confirmationMessage;
-
-        $.ajax({
-          type: "POST",
-          url: "http://127.0.0.1:8848/logout/" + username,
-        });
-
-        return confirmationMessage;
-      });
+      // window.addEventListener('beforeunload', function (e) {
+      //   // 在这里执行你想要的操作
+      //   var confirmationMessage = '确定要离开吗？';
+      //
+      //   // 如果需要显示一个确认提示框，可以设置confirmationMessage
+      //   // e.returnValue兼容旧版浏览器
+      //   e.returnValue = confirmationMessage;
+      //
+      //   $.ajax({
+      //     type: "POST",
+      //     url: "http://127.0.0.1:8848/logout/" + username,
+      //   });
+      //
+      //   return confirmationMessage;
+      // });
 
 
       // 连接 WebSocket 的函数
@@ -157,7 +157,10 @@
 
         if (message.username === username) {
           // 如果消息来自当前用户，将其显示在右侧
-          listItem = $("<li class='rightMessage'>").html(`
+      //     listItem = $("<li class='rightMessage'>").html(`
+      // <span class="messageTime">${message.createTime}</span><br>
+      // ${message.content}`);
+          listItem = $("<li  class='rightMessage'>").html(`[${message.username}]：<br>
       <span class="messageTime">${message.createTime}</span><br>
       ${message.content}`);
         } else {
