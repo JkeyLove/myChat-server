@@ -24,14 +24,9 @@
 
   <!-- 显示消息的列表 -->
   <ul id="messageList"></ul>
-
-
   </body>
-
   <script src="https://s3.pstatp.com/cdn/expire-1-M/jquery/3.3.1/jquery.min.js"></script>
   <script type="text/javascript">
-
-
     $(document).ready(function() {
       let username
       var socket;
@@ -61,29 +56,23 @@
 
       // 连接 WebSocket 的函数
       function connectWebSocket(roomId) {
-
         // 如果已存在 WebSocket 连接，先关闭它
         if (socket) {
           socket.close();
         }
-
         $("#messageList").empty();
-
         // 在这里替换为你的 WebSocket 服务器地址
         socket = new WebSocket("ws://127.0.0.1:8848/endPoint/" + roomId +"/" + username);
-
         // 连接成功时触发
         socket.onopen = function (event) {
           console.log("WebSocket连接已打开");
         };
-
         // 接收消息时触发
         socket.onmessage = function (event) {
           console.log("收到消息: " + event.data);
           // 处理接收到的消息
           var message = JSON.parse(event.data);
           displayMessage(message.data[0]);
-
           // 将滚动条拉到最下面
           scrollMessageListToBottom();
         };
@@ -100,12 +89,10 @@
         messageList.scrollTop(messageList[0].scrollHeight);
       }
 
-
       // 显示消息的函数
       function displayMessage(message) {
         var messageList = $("#messageList");
         var listItem;
-
         if (message.username === username) {
           // 如果消息来自当前用户，将其显示在右侧
           listItem = $("<li class='rightMessage'>").html(`
@@ -117,26 +104,20 @@
         <span class="messageTime">${message.createTime}</span><br>
         ${message.content}`);
         }
-
         messageList.append(listItem);
-
         // 将滚动条拉到最下面
         messageList.scrollTop(messageList[0].scrollHeight);
       }
-
 
       // 添加房间
       $("#create").click(function() {
         // 获取所有具有 room 类的按钮
         var roomButtons = $(".room");
-
         // 如果有按钮，则获取最后一个按钮的数字部分，否则从1开始
         var numberPart = roomButtons.length > 0 ? parseInt(roomButtons.last().attr("id").substring(4)) + 1 : 1;
-
         console.log("最后一个id为"+numberPart)
         // 创建一个新按钮，将数字拼接到 "房间" 后面
         var newButton = $(`<button class="room" id="room${numberPart} ">`).text(`房间 ${numberPart}`);
-
         $("#roomButton").append(newButton);
 
       });
@@ -156,7 +137,6 @@
           success: function (response) {
             // 请求成功的处理逻辑
             console.log("成功", response);
-
             if (response.data && Array.isArray(response.data)) {
               response.data.forEach((message) => {
                 console.log("Message:", message);
@@ -164,7 +144,6 @@
                 displayMessage(message)
               })
             }
-            //displayMessage(response.data);
           },
           error: function (error) {
             // 请求失败的处理逻辑
@@ -178,7 +157,6 @@
       $("#sendMessage").click(function () {
         // 获取消息输入框的值
         var message = $("#messageInput").val();
-
         // 检查消息是否非空
         if (message.trim() !== "") {
           // 发送消息到WebSocket服务器
@@ -187,8 +165,6 @@
           $("#messageInput").val("");
         }
       });
-
-
     });
   </script>
 
