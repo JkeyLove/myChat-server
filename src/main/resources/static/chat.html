@@ -171,10 +171,12 @@
         if (message.content.length > 100) {
           // 只添加语音消息，不添加文本消息部分
           listItem.empty(); // 清空列表项内容
-          listItem.append(`<audio controls>
-      <source src="data:audio/mp3;base64,${message.content}" type="audio/mp3">
-      Your browser does not support the audio tag.
-    </audio>`);
+          listItem.append(`<p>[${message.username}]：<br>
+      <span class="messageTime">${message.createTime}</span></p>
+      <audio controls>
+        <source src="data:audio/mp3;base64,${message.content}" type="audio/mp3">
+        Your browser does not support the audio tag.
+      </audio>`);
         }
 
         // 添加完整的消息到消息列表
