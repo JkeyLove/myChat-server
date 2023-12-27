@@ -20,16 +20,77 @@
   <div id="inPut">
     <input type="text" id="messageInput" placeholder="输入消息">
     <button id="sendMessage">发送消息</button>
+    <button id="startRecording">开始录音</button>
+    <button id="stopRecording" disabled>停止录音</button>
+    <button id="sendAudio">发送语音</button>
   </div>
 
   <!-- 显示消息的列表 -->
   <ul id="messageList"></ul>
   </body>
+  <script src="src/main/resources/static/lame.all.js"></script>
   <script src="https://s3.pstatp.com/cdn/expire-1-M/jquery/3.3.1/jquery.min.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
       let username
       var socket;
+
+      let mediaRecorder;
+      let audioChunks = [];
+
+      document.getElementById('startRecording').addEventListener('click', startRecording);
+      document.getElementById('stopRecording').addEventListener('click', stopRecording);
+      document.getElementById('sendAudio').addEventListener('click', sendAudio);
+
+      async function startRecording() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+          mediaRecorder = new MediaRecorder(stream);
+
+          mediaRecorder.ondataavailable = event => {
+            if (event.data.size > 0) {
+              audioChunks.push(event.data);
+            }
+          };
+
+          mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+            convertAudioToBase64(audioBlob);
+          };
+
+          mediaRecorder.start();
+          document.getElementById('startRecording').disabled = true;
+          document.getElementById('stopRecording').disabled = false;
+        } catch (error) {
+          console.error('Error accessing microphone:', error);
+        }
+      }
+
+      function stopRecording() {
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+          mediaRecorder.stop();
+          document.getElementById('startRecording').disabled = false;
+          document.getElementById('stopRecording').disabled = true;
+        }
+      }
+
+      function convertAudioToBase64(audioBlob) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Data = reader.result.split(',')[1];
+          document.getElementById('sendAudio').setAttribute('data-audio', base64Data);
+        };
+        reader.readAsDataURL(audioBlob);
+      }
+
+      function sendAudio() {
+        const base64Data = document.getElementById('sendAudio').getAttribute('data-audio');
+        // 在这里可以将 base64Data 发送到服务器
+        alert('发送音频逻辑在这里实现，Base64 数据: ' + base64Data);
+        socket.send(base64Data)
+      }
+
 
       // 在其他页面获取用户名
       username =  localStorage.getItem('username')
